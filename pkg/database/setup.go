@@ -24,9 +24,10 @@ func NewDB(config *env.DBConfig) (*DB, error) {
 	)
 
 	db, err := sqlx.Open("postgres", connectionString)
-	if err != nil {
+	if err != nil || db == nil {
 		return nil, errors.Wrap(err, "Could not connect to the db")
 	}
+
 	// This step is needed because db.Open() simply validates the arguments, it does not open an actual connection to the db.
 	err = db.Ping()
 	if err != nil {

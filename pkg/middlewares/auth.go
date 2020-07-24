@@ -7,18 +7,12 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/strconst"
+
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/env"
 
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/httperrors"
 	"github.com/dgrijalva/jwt-go"
-)
-
-// Key is special type for keys used with context in auth middleware
-type Key int
-
-const (
-	// KeyProps is the context key used to access the JWT props
-	KeyProps Key = iota
 )
 
 // AuthMiddleware takes a httperrors.Handler and calls it if the JWT in the headers is valid
@@ -28,7 +22,7 @@ func AuthMiddleware(next httperrors.Handler, config *env.Config) httperrors.Hand
 		// jwtToken := "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE1ODQyNzYxNDYsImV4cCI6MTYxNTgxMjE0NSwiYXVkIjoiIiwic3ViIjoiYzMyN2VhMmMtNjUzOS0xMWVhLThjODUtMDI0MmFjMTkwMDAyIiwibmFtZSI6IkpvaG4gRG9lIn0.f94bHZLazkHYNqYMgaHIpPIF4WLFQkfR3rqvN3KiIC9egLI-jf_HJTPbiNLby0SMB1el7im4VS8tG6Uq6p3TWw"
 		authHeader := strings.Split(r.Header.Get("Authorization"), "Bearer ")
 		if len(authHeader) != 2 {
-			return &httperrors.HTTPError{r, errors.New("Malformed token"), "Malformed token", http.StatusUnauthorized}
+			return &httperrors.HTTPError{r, errors.New(strconst.MalformedToken), strconst.MalformedToken, http.StatusUnauthorized}
 		}
 		jwtToken := authHeader[1]
 		token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
@@ -38,18 +32,18 @@ func AuthMiddleware(next httperrors.Handler, config *env.Config) httperrors.Hand
 			return []byte(config.Secretkey), nil
 		})
 		if err != nil {
-			return &httperrors.HTTPError{r, err, "Malformed token", http.StatusUnauthorized}
+			return &httperrors.HTTPError{r, err, strconst.MalformedToken, http.StatusUnauthorized}
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			ctx := context.WithValue(r.Context(), KeyProps, claims)
+			ctx := context.WithValue(r.Context(), "props", claims)
 			// Access context values in handlers like this
 			// props, _ := r.Context().Value("props").(jwt.MapClaims)
 			if err := next(w, r.WithContext(ctx)); err != nil {
 				return err
 			}
 		} else {
-			return &httperrors.HTTPError{r, errors.New("Failed to validate claims"), "Unauthorized", http.StatusUnauthorized}
+			return &httperrors.HTTPError{r, errors.New(strconst.ClaimFail), strconst.Unauthorized, http.StatusUnauthorized}
 		}
 		return nil
 	}
