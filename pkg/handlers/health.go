@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/httperrors"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/httperrors"
 )
 
 // HeartBeat sends a response back, just to check if the server is up.

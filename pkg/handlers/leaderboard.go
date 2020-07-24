@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/database"
-	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/env"
-	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/httperrors"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/database"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/env"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/httperrors"
 )
 
 // GetLeaderboard returns all the users ordered in descending order of level,

@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/strconst"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/strconst"
 
-	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/env"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/env"
 
-	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/httperrors"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/httperrors"
 	"github.com/dgrijalva/jwt-go"
 )
 

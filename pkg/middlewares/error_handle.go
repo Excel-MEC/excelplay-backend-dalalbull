@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/httperrors"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/httperrors"
 	"github.com/sirupsen/logrus"
 )
 

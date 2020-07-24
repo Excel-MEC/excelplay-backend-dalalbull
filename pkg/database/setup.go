@@ -3,7 +3,7 @@ package database
 import (
 	"fmt"
 
-	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/env"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/env"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 )

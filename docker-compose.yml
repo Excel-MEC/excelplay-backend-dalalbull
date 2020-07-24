@@ -1,7 +1,7 @@
 version: "3"
 services:
   app:
-    container_name: kryptos
+    container_name: dalalbull
     build:
       context: .
       dockerfile: dev.dockerfile
@@ -9,15 +9,15 @@ services:
       - 8080:8080
     restart: unless-stopped
     volumes:
-      - ./:/excelplay-backend-kryptos
+      - ./:/excelplay-backend-dalalbull
     depends_on:
       - db
     networks:
-      - kryptos_network
+      - dalalbull_network
 
   db:
     image: postgres:latest
-    container_name: kryptos_db
+    container_name: dalalbull_db
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -28,7 +28,7 @@ services:
     volumes:
       - database_postgres:/var/lib/postgresql/data
     networks:
-      - kryptos_network
+      - dalalbull_network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -41,7 +41,7 @@ services:
     ports:
       - "5050:80"
     networks:
-      - kryptos_network
+      - dalalbull_network
     restart: unless-stopped
 
 volumes:
@@ -49,5 +49,5 @@ volumes:
 
 # Networks to be created to facilitate communication between containers
 networks:
-  kryptos_network:
+  dalalbull_network:
     driver: bridge

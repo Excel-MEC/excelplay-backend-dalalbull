@@ -1,11 +1,11 @@
 package routes
 
 import (
-	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/database"
-	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/env"
-	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/handlers"
-	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/httperrors"
-	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/middlewares"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/database"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/env"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/handlers"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/httperrors"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/middlewares"
 	"github.com/gorilla/mux"
 )
 

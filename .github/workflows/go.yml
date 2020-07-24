@@ -20,4 +20,4 @@ jobs:
           golint -set_exit_status ./cmd/** ./pkg/**
 
       - name: Build
-        run: go build ./cmd/excelplay-backend-kryptos
+        run: go build ./cmd/excelplay-backend-dalalbull
