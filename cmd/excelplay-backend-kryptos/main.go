@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/database"
+	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/database"
 
-	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/env"
-	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/routes"
+	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/env"
+	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/routes"
 
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
