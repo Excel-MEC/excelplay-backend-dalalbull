@@ -4,12 +4,9 @@ go 1.12
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/golang-migrate/migrate v3.5.4+incompatible
-	github.com/golang-migrate/migrate/v4 v4.11.0
 	github.com/gorilla/mux v1.7.4
 	github.com/jmoiron/sqlx v1.2.0
-	github.com/lib/pq v1.3.0
+	github.com/lib/pq v1.8.0
 	github.com/pkg/errors v0.9.1
-	github.com/sirupsen/logrus v1.4.2
-	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e // indirect
+	github.com/sirupsen/logrus v1.6.0
 )

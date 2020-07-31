@@ -11,11 +11,11 @@ services:
     volumes:
       - ./:/excelplay-backend-dalalbull
     depends_on:
-      - db
+      - db2
     networks:
       - dalalbull_network
 
-  db:
+  db2:
     image: postgres:latest
     container_name: dalalbull_db
     environment:
@@ -32,12 +32,12 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: pgadmin_container
+    container_name: pgadmin_container_dbull
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     depends_on:
-      - db
+      - db2
     ports:
       - "5050:80"
     networks:
