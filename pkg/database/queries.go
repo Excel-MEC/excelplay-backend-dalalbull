@@ -23,7 +23,7 @@ func (db *DB) GetPortfolio(portfolio *Portfolio, uuid string) error {
 func (db *DB) CreatePortfolio(uuid string) (sql.Result, error) {
 	var totalUsers int
 	db.Get(totalUsers, "select count(*) from portfolio")
-	return db.Exec("insert into portfolio (user_id, rank) values($1, $2)", uuid, totalUsers)
+	return db.Exec("insert into portfolio (user_id, rank) values($1, $2)", uuid, totalUsers+1)
 }
 
 // // GetHints gets the hints released for a question
