@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS portfolio (
     user_id uuid primary key,
     cash_bal numeric(19,2) default 100000,
     net_worth numeric(19,2) default 100000,
-    rank int default 131,
+    rank int,
     no_trans numeric(19,2) default 0,
     margin numeric(19,2) default 0
 );
