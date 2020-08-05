@@ -24,7 +24,7 @@ func LoadConfig() *Config {
 		Port:      ":8080",
 		Secretkey: "supersecretkey",
 		DB: &DBConfig{
-			Host:     "db",
+			Host:     "db2",
 			Dbport:   5432,
 			User:     "admin",
 			Password: "password",
