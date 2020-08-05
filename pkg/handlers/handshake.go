@@ -40,7 +40,7 @@ func InitUser(db *database.DB, env *env.Config) httperrors.Handler {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		w.Write("success")
+		w.Write([]byte("success"))
 		return nil
 	}
 }

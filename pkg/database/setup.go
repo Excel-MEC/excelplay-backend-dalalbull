@@ -46,6 +46,5 @@ func NewDB(config *env.DBConfig) (*DB, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "Could not create schema")
 	}
-
 	return &DB{db}, nil
 }
