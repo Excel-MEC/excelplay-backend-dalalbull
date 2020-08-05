@@ -14,6 +14,18 @@ func (db *DB) GetUser(currUser *User, uuid string) error {
 	return db.Get(currUser, "select name from duser where id = $1", uuid)
 }
 
+// GetPortfolio returns the portfolio of a user
+func (db *DB) GetPortfolio(portfolio *Portfolio, uuid string) error {
+	return db.Get(portfolio, "select cash_bal, net_worth, rank, no_trans, margin from portfolio where user_id = $1", uuid)
+}
+
+// CreatePortfolio creates a portfolio for a new user
+func (db *DB) CreatePortfolio(uuid string) (sql.Result, error) {
+	var totalUsers int
+	db.Get(totalUsers, "select count(*) from portfolio")
+	return db.Exec("insert into portfolio (user_id, rank) values($1, $2)", uuid, totalUsers)
+}
+
 // // GetHints gets the hints released for a question
 // func (db *DB) GetHints(currLev int, hints *[]string) error {
 // 	return db.Select(hints, "select content from hints where number = $1", currLev)
