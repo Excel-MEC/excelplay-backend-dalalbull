@@ -14,6 +14,11 @@ func (db *DB) GetUser(currUser *User, uuid string) error {
 	return db.Get(currUser, "select name from duser where id = $1", uuid)
 }
 
+// GetTotalUsers returns the number of total users in the leaderboard
+func (db *DB) GetTotalUsers(n *int) error {
+	return db.Get(n, "select count(*) from duser")
+}
+
 // GetPortfolio returns the portfolio of a user
 func (db *DB) GetPortfolio(portfolio *Portfolio, uuid string) error {
 	return db.Get(portfolio, "select cash_bal, net_worth, rank, no_trans, margin from portfolio where user_id = $1", uuid)
