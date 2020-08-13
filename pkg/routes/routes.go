@@ -34,6 +34,16 @@ func (router *Router) Routes(db *database.DB, config *env.Config) {
 			),
 		),
 	).Methods("GET")
+	router.Handle("/api/portfolioview",
+		middlewares.ErrorsMiddleware(
+			httperrors.Handler(
+				middlewares.AuthMiddleware(
+					handlers.PortfolioView(db, config),
+					config,
+				),
+			),
+		),
+	).Methods("GET")
 	router.Handle("/api/leaderboard",
 		middlewares.ErrorsMiddleware(
 			httperrors.Handler(
