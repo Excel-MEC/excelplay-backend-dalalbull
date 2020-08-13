@@ -13,3 +13,10 @@ type Portfolio struct {
 	NoTrans  float32 `json:"no_trans" db:"no_trans"`
 	Margin   float32 `json:"margin" db:"margin"`
 }
+
+// TickerData struct is used to hold details of a stock to be shown in a ticker
+type TickerData struct {
+	Name         string  `json:"name" db:"name"`
+	CurrentPrice float32 `json:"current_price" db:"current_price"`
+	ChangePer    float32 `json:"change_per" db:"change_per"`
+}

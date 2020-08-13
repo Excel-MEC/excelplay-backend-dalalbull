@@ -44,6 +44,16 @@ func (router *Router) Routes(db *database.DB, config *env.Config) {
 			),
 		),
 	).Methods("GET")
+	router.Handle("/api/ticker",
+		middlewares.ErrorsMiddleware(
+			httperrors.Handler(
+				middlewares.AuthMiddleware(
+					handlers.Ticker(db, config),
+					config,
+				),
+			),
+		),
+	).Methods("GET")
 	router.Handle("/api/leaderboard",
 		middlewares.ErrorsMiddleware(
 			httperrors.Handler(

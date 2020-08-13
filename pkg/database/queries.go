@@ -24,6 +24,11 @@ func (db *DB) GetPortfolio(portfolio *Portfolio, uuid string) error {
 	return db.Get(portfolio, "select cash_bal, net_worth, rank, no_trans, margin from portfolio where user_id = $1", uuid)
 }
 
+// GetTickerData returns stock data for the ticker
+func (db *DB) GetTickerData(tickerData *[]TickerData) error {
+	return db.Select(tickerData, "select name, current_price, change_per from stocks_data")
+}
+
 // CreatePortfolio creates a portfolio for a new user
 func (db *DB) CreatePortfolio(uuid string) (sql.Result, error) {
 	var totalUsers int
