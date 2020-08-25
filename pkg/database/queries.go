@@ -56,6 +56,30 @@ func (db *DB) GetTopVal(mostActiveVal *[]StockValue) error {
 	return db.Select(mostActiveVal, "select symbol, trade_value from stocks_data order by trade_value desc limit 5")
 }
 
+// GetStockHoldingsBuy gets the details about stocks bought by a certain user
+func (db *DB) GetStockHoldingsBuy(userID string, stock *[]Stock) error {
+	err := db.Select(stock, "select tr.symbol, tr.quantity, tr.value, s.current_price from transaction_buy as tr, stocks_data as s where tr.user_id = $1 and tr.symbol=s.symbol", userID)
+	if err != nil {
+		return err
+	}
+	for _, v := range *stock {
+		v.Type = "BUY"
+	}
+	return nil
+}
+
+// GetStockHoldingsShortSell gets the details about stocks shorted by a certain user
+func (db *DB) GetStockHoldingsShortSell(userID string, stock *[]Stock) error {
+	err := db.Select(stock, "select tr.symbol, tr.quantity, tr.value, s.current_price from transaction_short_sell as tr, stocks_data as s where tr.user_id = $1 and tr.symbol=s.symbol", userID)
+	if err != nil {
+		return err
+	}
+	for _, v := range *stock {
+		v.Type = "SHORT SELL"
+	}
+	return nil
+}
+
 // GetLeaderboard gets the users list in the descending order of level,
 // and for users on the same level, in the ascending order of last submission time.
 func (db *DB) GetLeaderboard(users *[]User) error {

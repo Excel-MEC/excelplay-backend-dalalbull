@@ -27,7 +27,7 @@ type Stock struct {
 	Number   int     `json:"number" db:"quantity"`
 	Type     string  `json:"type"`
 	Purchase float32 `json:"purchase" db:"value"`
-	Current  float32 `json:"current"`
+	Current  float32 `json:"current" db:"current_price"`
 }
 
 // StockChange struct holds change information about a particular stock
