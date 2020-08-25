@@ -20,3 +20,40 @@ type TickerData struct {
 	CurrentPrice float32 `json:"current_price" db:"current_price"`
 	ChangePer    float32 `json:"change_per" db:"change_per"`
 }
+
+// Stock struct holds information about a particular stock
+type Stock struct {
+	Company  string  `json:"company" db:"symbol"`
+	Number   int     `json:"number" db:"quantity"`
+	Type     string  `json:"type"`
+	Purchase float32 `json:"purchase" db:"value"`
+	Current  float32 `json:"current" db:"current_price"`
+}
+
+// StockChange struct holds change information about a particular stock
+type StockChange struct {
+	Name      string  `json:"name" db:"symbol"`
+	ChangePer float32 `json:"change_per" db:"change_per"`
+}
+
+// StockVolume struct holds information about trade quantity of a particular stock
+type StockVolume struct {
+	Name     string  `json:"name" db:"symbol"`
+	TradeQty float32 `json:"trade_qty" db:"trade_qty"`
+}
+
+// StockValue struct holds information about trade value of a particular stock
+type StockValue struct {
+	Name       string  `json:"name" db:"symbol"`
+	TradeValue float32 `json:"trade_value" db:"trade_value"`
+}
+
+// DashboardData struct is used to hold all the data sent to be displayed on a user's dashboard
+type DashboardData struct {
+	TotalUsers    int           `json:"total_users"`
+	StockHoldings []Stock       `json:"stockholdings"`
+	TopGainers    []StockChange `json:"topGainers"`
+	TopLosers     []StockChange `json:"topLosers"`
+	MostActiveVol []StockVolume `json:"mostActiveVol"`
+	MostActiveVal []StockValue  `json:"mostActiveVal"`
+}

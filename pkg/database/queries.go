@@ -36,25 +36,49 @@ func (db *DB) CreatePortfolio(uuid string) (sql.Result, error) {
 	return db.Exec("insert into portfolio (user_id, rank) values($1, $2)", uuid, totalUsers+1)
 }
 
-// // GetHints gets the hints released for a question
-// func (db *DB) GetHints(currLev int, hints *[]string) error {
-// 	return db.Select(hints, "select content from hints where number = $1", currLev)
-// }
+// GetTopGainers gets the top 5 stocks with largest gains
+func (db *DB) GetTopGainers(topGainers *[]StockChange) error {
+	return db.Select(topGainers, "select symbol, change_per from stocks_data order by change_per desc limit 5")
+}
 
-// // LogAnswerAttempt logs every answer attempt
-// func (db *DB) LogAnswerAttempt(uuid string, currUser User, answer string) (sql.Result, error) {
-// 	return db.Exec("insert into answer_logs values($1, $2, $3, $4)", uuid, currUser.Name, answer, time.Now())
-// }
+// GetTopLosers gets the top 5 stocks with largest losses
+func (db *DB) GetTopLosers(topLosers *[]StockChange) error {
+	return db.Select(topLosers, "select symbol, change_per from stocks_data order by change_per limit 5")
+}
 
-// // GetCorrectAns gets the correct answer for a level from the DB to check if the user's attempt is correct
-// func (db *DB) GetCorrectAns(currUser User, correctAns *string) error {
-// 	return db.Get(correctAns, "select answer from levels where number = $1", currUser.CurrLevel)
-// }
+// GetTopVol gets the top 5 stocks with the highest trade quantity
+func (db *DB) GetTopVol(mostActiveVol *[]StockVolume) error {
+	return db.Select(mostActiveVol, "select symbol, trade_qty from stocks_data order by trade_qty desc limit 5")
+}
 
-// // CorrectAnswerSubmitted increments the user level on submission of correct answer
-// func (db *DB) CorrectAnswerSubmitted(uuid string) (sql.Result, error) {
-// 	return db.Exec("update duser set curr_level = curr_level + 1 where id = $1", uuid)
-// }
+// GetTopVal gets the top 5 stocks with the highest trade value
+func (db *DB) GetTopVal(mostActiveVal *[]StockValue) error {
+	return db.Select(mostActiveVal, "select symbol, trade_value from stocks_data order by trade_value desc limit 5")
+}
+
+// GetStockHoldingsBuy gets the details about stocks bought by a certain user
+func (db *DB) GetStockHoldingsBuy(userID string, stock *[]Stock) error {
+	err := db.Select(stock, "select tr.symbol, tr.quantity, tr.value, s.current_price from transaction_buy as tr, stocks_data as s where tr.user_id = $1 and tr.symbol=s.symbol", userID)
+	if err != nil {
+		return err
+	}
+	for _, v := range *stock {
+		v.Type = "BUY"
+	}
+	return nil
+}
+
+// GetStockHoldingsShortSell gets the details about stocks shorted by a certain user
+func (db *DB) GetStockHoldingsShortSell(userID string, stock *[]Stock) error {
+	err := db.Select(stock, "select tr.symbol, tr.quantity, tr.value, s.current_price from transaction_short_sell as tr, stocks_data as s where tr.user_id = $1 and tr.symbol=s.symbol", userID)
+	if err != nil {
+		return err
+	}
+	for _, v := range *stock {
+		v.Type = "SHORT SELL"
+	}
+	return nil
+}
 
 // GetLeaderboard gets the users list in the descending order of level,
 // and for users on the same level, in the ascending order of last submission time.
