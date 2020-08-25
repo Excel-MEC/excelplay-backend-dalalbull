@@ -37,13 +37,23 @@ func (db *DB) CreatePortfolio(uuid string) (sql.Result, error) {
 }
 
 // GetTopGainers gets the top 5 stocks with largest gains
-func (db *DB) GetTopGainers(topGainers *StockChange) error {
-	return db.Get(topGainers, "select symbol, change_per from stocks_data order by change_per desc limit 5")
+func (db *DB) GetTopGainers(topGainers *[]StockChange) error {
+	return db.Select(topGainers, "select symbol, change_per from stocks_data order by change_per desc limit 5")
 }
 
 // GetTopLosers gets the top 5 stocks with largest losses
-func (db *DB) GetTopLosers(topLosers *StockChange) error {
-	return db.Get(topLosers, "select symbol, change_per from stocks_data order by change_per limit 5")
+func (db *DB) GetTopLosers(topLosers *[]StockChange) error {
+	return db.Select(topLosers, "select symbol, change_per from stocks_data order by change_per limit 5")
+}
+
+// GetTopVol gets the top 5 stocks with the highest trade quantity
+func (db *DB) GetTopVol(mostActiveVol *[]StockVolume) error {
+	return db.Select(mostActiveVol, "select symbol, trade_qty from stocks_data order by trade_qty desc limit 5")
+}
+
+// GetTopVal gets the top 5 stocks with the highest trade value
+func (db *DB) GetTopVal(mostActiveVal *[]StockValue) error {
+	return db.Select(mostActiveVal, "select symbol, trade_value from stocks_data order by trade_value desc limit 5")
 }
 
 // GetLeaderboard gets the users list in the descending order of level,
