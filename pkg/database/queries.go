@@ -36,6 +36,16 @@ func (db *DB) CreatePortfolio(uuid string) (sql.Result, error) {
 	return db.Exec("insert into portfolio (user_id, rank) values($1, $2)", uuid, totalUsers+1)
 }
 
+// GetTopGainers gets the top 5 stocks with largest gains
+func (db *DB) GetTopGainers(topGainers *StockChange) error {
+	return db.Get(topGainers, "select symbol, change_per from stocks_data order by change_per desc limit 5")
+}
+
+// GetTopLosers gets the top 5 stocks with largest losses
+func (db *DB) GetTopLosers(topLosers *StockChange) error {
+	return db.Get(topLosers, "select symbol, change_per from stocks_data order by change_per limit 5")
+}
+
 // // GetHints gets the hints released for a question
 // func (db *DB) GetHints(currLev int, hints *[]string) error {
 // 	return db.Select(hints, "select content from hints where number = $1", currLev)
