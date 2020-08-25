@@ -64,6 +64,16 @@ func (router *Router) Routes(db *database.DB, config *env.Config) {
 			),
 		),
 	).Methods("GET")
+	router.Handle("/api/dashboard",
+		middlewares.ErrorsMiddleware(
+			httperrors.Handler(
+				middlewares.AuthMiddleware(
+					handlers.GetDashboard(db, config),
+					config,
+				),
+			),
+		),
+	).Methods("GET")
 
 	// LoggerMiddleware does not have to be selectively applied because it applies to all endpoints
 	router.Use(middlewares.LoggerMiddleware)
