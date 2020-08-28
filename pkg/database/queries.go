@@ -85,3 +85,8 @@ func (db *DB) GetStockHoldingsShortSell(userID string, stock *[]Stock) error {
 func (db *DB) GetLeaderboard(users *[]User) error {
 	return db.Select(users, "select name, curr_level from duser order by curr_level desc, last_anstime")
 }
+
+// GetCompanyStockInfo returns all the details about the stock of a certain company
+func (db *DB) GetCompanyStockInfo(companySymbol string, companyInfo *CompanyInfo) error {
+	return db.Get(companyInfo, "select * from stocks_data where symbol = $1", companySymbol)
+}
