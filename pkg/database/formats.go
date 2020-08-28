@@ -30,6 +30,20 @@ type Stock struct {
 	Current  float32 `json:"current" db:"current_price"`
 }
 
+// CompanyInfo struct holds all the information about stock of a company.
+type CompanyInfo struct {
+	Symbol     string  `json:"symbol" db:"symbol"`
+	Name       string  `json:"name" db:"name"`
+	CurrPrice  float32 `json:"current_price" db:"current_price"`
+	High       float32 `json:"high" db:"high"`
+	Low        float32 `json:"low" db:"low"`
+	OpenPrice  float32 `json:"open_price" db:"open_price"`
+	Change     float32 `json:"change" db:"change"`
+	ChangePer  float32 `json:"change_per" db:"change_per"`
+	TradeQty   float32 `json:"trade_qty" db:"trade_qty"`
+	TradeValue float32 `json:"trade_value" db:"trade_value"`
+}
+
 // StockChange struct holds change information about a particular stock
 type StockChange struct {
 	Name      string  `json:"name" db:"symbol"`
