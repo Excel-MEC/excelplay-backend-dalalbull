@@ -74,16 +74,16 @@ type DashboardData struct {
 
 // SellDataWrapper is a wrapper around SellData providing additional information
 type SellDataWrapper struct {
-	CClose  bool      `json:"cclose"`
-	NoStock bool      `json:"no_stock"`
-	Data    *SellData `json:"trans"`
+	CClose  bool       `json:"cclose"`
+	NoStock bool       `json:"no_stock"`
+	Data    []SellData `json:"trans"`
 }
 
 // SellData holds information about stocks a user has
 type SellData struct {
-	Company      string  `json:"company" db:"symbol"`
+	Company      string  `json:"company"`
 	TypeOfTrade  string  `json:"buy_ss"`
-	ShareInHand  float32 `json:"share_in_hand" db:"value"`
+	ShareInHand  int     `json:"share_in_hand"`
 	CurrentPrice float32 `json:"current_price"`
 	Gain         float32 `json:"gain"`
 	TypeOfTrans  string  `json:"type_of_trans"`
