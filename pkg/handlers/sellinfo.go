@@ -24,7 +24,7 @@ func SellInfo(db *database.DB, env *env.Config) httperrors.Handler {
 		marketIsOpen := utils.IsMarketOpen()
 		if marketIsOpen {
 			err := db.GetStockHoldingsBuy(userID, &stocks)
-			if err != nil {
+			if err != nil && err.Error() != "sql: no rows in result set" {
 				return &httperrors.HTTPError{r, err, "Could not get bought stocks data", http.StatusInternalServerError}
 			}
 			for _, v := range stocks {
@@ -38,7 +38,7 @@ func SellInfo(db *database.DB, env *env.Config) httperrors.Handler {
 				})
 			}
 			err = db.GetStockHoldingsShortSell(userID, &stocks)
-			if err != nil {
+			if err != nil && err.Error() != "sql: no rows in result set" {
 				return &httperrors.HTTPError{r, err, "Could not get bought stocks data", http.StatusInternalServerError}
 			}
 			for _, v := range stocks {
@@ -50,6 +50,9 @@ func SellInfo(db *database.DB, env *env.Config) httperrors.Handler {
 					Gain:         ((v.Purchase - v.Current) / v.Purchase) * 100,
 					TypeOfTrans:  "SHORT COVER",
 				})
+			}
+			if len(transactions) == 0 {
+				noStock = true
 			}
 		}
 
