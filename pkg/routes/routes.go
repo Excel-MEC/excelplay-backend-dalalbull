@@ -94,7 +94,7 @@ func (router *Router) Routes(db *database.DB, config *env.Config) {
 			),
 		),
 	).Methods("GET")
-	router.Handle("/api/pending",
+	router.Handle("/api/pending", // API Change
 		middlewares.ErrorsMiddleware(
 			httperrors.Handler(
 				middlewares.AuthMiddleware(

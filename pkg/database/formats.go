@@ -95,6 +95,6 @@ type PendingData struct {
 	Quantity     int     `json:"quantity" db:"quantity"`
 	Type         string  `json:"type" db:"buy_ss"`
 	Value        float32 `json:"value" db:"value"`
-	CurrentPrice float32 `json:"current"`
+	CurrentPrice float32 `json:"current_price" db:"current_price"`
 	ID           string  `json:"id" db:"uid"`
 }

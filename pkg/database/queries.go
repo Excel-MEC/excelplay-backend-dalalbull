@@ -90,3 +90,8 @@ func (db *DB) GetLeaderboard(users *[]User) error {
 func (db *DB) GetCompanyStockInfo(companySymbol string, companyInfo *CompanyInfo) error {
 	return db.Get(companyInfo, "select * from stocks_data where symbol = $1", companySymbol)
 }
+
+// GetPendingStocks returns info about pending stocks
+func (db *DB) GetPendingStocks(uid string, pending *[]PendingData) error {
+	return db.Select(pending, "select p.quantity, p.symbol, p.buy_ss, p.value, p.id, s.current_price from pending as p left join stocks_data as s on p.symbol = s.symbol where p.uid = $1", uid)
+}
