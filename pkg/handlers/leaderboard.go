@@ -7,6 +7,7 @@ import (
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/database"
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/env"
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/httperrors"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/strconst"
 )
 
 // GetLeaderboard returns all the users ordered in descending order of level,
@@ -21,7 +22,7 @@ func GetLeaderboard(db *database.DB, config *env.Config) httperrors.Handler {
 
 		jsonRes, err := json.Marshal(users)
 		if err != nil {
-			return &httperrors.HTTPError{r, err, "Could not serialize json", http.StatusInternalServerError}
+			return &httperrors.HTTPError{r, err, strconst.JSONEncodingFail, http.StatusInternalServerError}
 		}
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		w.WriteHeader(http.StatusOK)

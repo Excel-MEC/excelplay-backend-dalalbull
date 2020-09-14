@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/strconst"
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/utils"
 
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/database"
@@ -62,7 +63,7 @@ func SellInfo(db *database.DB, env *env.Config) httperrors.Handler {
 			Data:    transactions,
 		})
 		if err != nil {
-			return &httperrors.HTTPError{r, err, "Could not serialize json", http.StatusInternalServerError}
+			return &httperrors.HTTPError{r, err, strconst.JSONEncodingFail, http.StatusInternalServerError}
 		}
 
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")

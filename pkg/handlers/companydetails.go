@@ -14,7 +14,7 @@ import (
 // GetCompanyDetails gets all the stock details of a single company
 func GetCompanyDetails(db *database.DB, env *env.Config) httperrors.Handler {
 	type company struct {
-		Symbol string
+		Symbol string `json:"symbol"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		var c company
@@ -31,7 +31,7 @@ func GetCompanyDetails(db *database.DB, env *env.Config) httperrors.Handler {
 
 		jsonRes, err := json.Marshal(companyInfo)
 		if err != nil {
-			return &httperrors.HTTPError{r, err, "Could not serialize json", http.StatusInternalServerError}
+			return &httperrors.HTTPError{r, err, strconst.JSONEncodingFail, http.StatusInternalServerError}
 		}
 
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
