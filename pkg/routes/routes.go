@@ -104,6 +104,16 @@ func (router *Router) Routes(db *database.DB, config *env.Config) {
 			),
 		),
 	).Methods("GET")
+	router.Handle("/api/cancels", // API Change, what does 'iddel' in the input correspond to, since it isn't in the model?
+		middlewares.ErrorsMiddleware(
+			httperrors.Handler(
+				middlewares.AuthMiddleware(
+					handlers.Cancel(db, config),
+					config,
+				),
+			),
+		),
+	).Methods("GET")
 
 	// LoggerMiddleware does not have to be selectively applied because it applies to all endpoints
 	router.Use(middlewares.LoggerMiddleware)

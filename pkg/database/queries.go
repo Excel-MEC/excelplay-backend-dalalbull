@@ -95,3 +95,8 @@ func (db *DB) GetCompanyStockInfo(companySymbol string, companyInfo *CompanyInfo
 func (db *DB) GetPendingStocks(uid string, pending *[]PendingData) error {
 	return db.Select(pending, "select p.quantity, p.symbol, p.buy_ss, p.value, p.id, s.current_price from pending as p left join stocks_data as s on p.symbol = s.symbol where p.uid = $1", uid)
 }
+
+// DeletePending removes the specified entry from the pending table
+func (db *DB) DeletePending(uid string, symbol string) (sql.Result, error) {
+	return db.Exec("delete from pending where uid = $1 and symbol = $2", uid, symbol)
+}
