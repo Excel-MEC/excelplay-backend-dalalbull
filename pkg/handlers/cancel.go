@@ -14,7 +14,7 @@ import (
 )
 
 // Cancel a pending transaction
-func Cancel(db *database.DB, env env.Config) httperrors.Handler {
+func Cancel(db *database.DB, env *env.Config) httperrors.Handler {
 	type pendingStockToDelete struct {
 		Company string `json:"company"`
 	}
