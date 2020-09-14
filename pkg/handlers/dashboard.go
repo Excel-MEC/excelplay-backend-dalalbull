@@ -7,6 +7,7 @@ import (
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/database"
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/env"
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/httperrors"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/strconst"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -70,7 +71,7 @@ func GetDashboard(db *database.DB, env *env.Config) httperrors.Handler {
 			MostActiveVal: mostActiveVal,
 		})
 		if err != nil {
-			return &httperrors.HTTPError{r, err, "Could not serialize json", http.StatusInternalServerError}
+			return &httperrors.HTTPError{r, err, strconst.JSONEncodingFail, http.StatusInternalServerError}
 		}
 
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
