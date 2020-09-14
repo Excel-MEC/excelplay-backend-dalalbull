@@ -14,7 +14,7 @@ import (
 // GetCompanyDetails gets all the stock details of a single company
 func GetCompanyDetails(db *database.DB, env *env.Config) httperrors.Handler {
 	type company struct {
-		Symbol string
+		Symbol string `json:"symbol"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		var c company
