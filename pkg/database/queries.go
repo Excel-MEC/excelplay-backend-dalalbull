@@ -100,3 +100,8 @@ func (db *DB) GetPendingStocks(uid string, pending *[]PendingData) error {
 func (db *DB) DeletePending(uid string, symbol string) (sql.Result, error) {
 	return db.Exec("delete from pending where uid = $1 and symbol = $2", uid, symbol)
 }
+
+// GetCompanySymbols gets the stock exchange listing symbol for all the companies
+func (db *DB) GetCompanySymbols(symbols *[]string) error {
+	return db.Select(symbols, "select symbol from stocks_data")
+}
