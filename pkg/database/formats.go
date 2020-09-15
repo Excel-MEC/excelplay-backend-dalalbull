@@ -1,5 +1,9 @@
 package database
 
+import (
+	"time"
+)
+
 // User holds the details of a particular user
 type User struct {
 	Name string `json:"name" db:"name"`
@@ -97,4 +101,12 @@ type PendingData struct {
 	Value        float32 `json:"value" db:"value"`
 	CurrentPrice float32 `json:"current_price" db:"current_price"`
 	ID           string  `json:"id" db:"uid"`
+}
+
+type TransactionBuy struct {
+	Symbol   string    `json:"symbol" db:"symbol"`
+	Quantity int       `json:"quantity" db:"quantity"`
+	Value    float32   `json:"value" db:"value"`
+	ID       string    `json:"id" db:"user_id"`
+	Time     time.Time `json:"time" db:"time"`
 }
