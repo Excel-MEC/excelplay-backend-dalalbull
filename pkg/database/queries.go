@@ -105,3 +105,13 @@ func (db *DB) DeletePending(uid string, symbol string) (sql.Result, error) {
 func (db *DB) GetCompanySymbols(symbols *[]string) error {
 	return db.Select(symbols, "select symbol from stocks_data")
 }
+
+// GetCurrentPrice returns the current price of a company's stock
+func (db *DB) GetCurrentPrice(company string, currPrice *float32) error {
+	return db.Get(currPrice, "select current_price from stocks_data where symbol = $1", company)
+}
+
+// GetUserInfoForCurrentPrice gets some additional user info to be sent whenever a company's current price is requested
+func (db *DB) GetUserInfoForCurrentPrice(uid string, curr *CurrentPriceInfo) error {
+	return db.Get(curr, "select cash_bal, margin, no_trans from portfolio where user_id = $1", uid)
+}
