@@ -98,3 +98,11 @@ type PendingData struct {
 	CurrentPrice float32 `json:"current_price" db:"current_price"`
 	ID           string  `json:"id" db:"uid"`
 }
+
+// CurrentPriceInfo holds information to be sent back when user selects a company
+type CurrentPriceInfo struct {
+	CurrPrce float32 `json:"curr_price"`
+	CashBal  float32 `json:"cash_bal" db:"cash_bal"`
+	Margin   float32 `json:"margin" db:"margin"`
+	NoTrans  float32 `json:"no_trans" db:"no_trans"`
+}
