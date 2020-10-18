@@ -83,7 +83,7 @@ func (router *Router) Routes(db *database.DB, config *env.Config) {
 				),
 			),
 		),
-	).Methods("GET")
+	).Methods("POST")
 	router.Handle("/api/sell",
 		middlewares.ErrorsMiddleware(
 			httperrors.Handler(
@@ -113,7 +113,7 @@ func (router *Router) Routes(db *database.DB, config *env.Config) {
 				),
 			),
 		),
-	).Methods("GET")
+	).Methods("POST")
 	router.Handle("/api/stockinfo",
 		middlewares.ErrorsMiddleware(
 			httperrors.Handler(
@@ -129,6 +129,16 @@ func (router *Router) Routes(db *database.DB, config *env.Config) {
 			httperrors.Handler(
 				middlewares.AuthMiddleware(
 					handlers.CurrentPrice(db, config),
+					config,
+				),
+			),
+		),
+	).Methods("POST")
+	router.Handle("/api/history",
+		middlewares.ErrorsMiddleware(
+			httperrors.Handler(
+				middlewares.AuthMiddleware(
+					handlers.History(db, config),
 					config,
 				),
 			),
