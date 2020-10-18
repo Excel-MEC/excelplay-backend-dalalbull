@@ -115,3 +115,15 @@ func (db *DB) GetCurrentPrice(company string, currPrice *float32) error {
 func (db *DB) GetUserInfoForCurrentPrice(uid string, curr *CurrentPriceInfo) error {
 	return db.Get(curr, "select cash_bal, margin, no_trans from portfolio where user_id = $1", uid)
 }
+
+// GetHistory gets the history of transactions of a user
+func (db *DB) GetHistory(uid string, histories *[]History) error {
+	err := db.Select(histories, "select * from history where uid =  $1", uid)
+	if err != nil {
+		return err
+	}
+	for _, v := range *histories {
+		v.Total = v.Quantity * v.Price
+	}
+	return nil
+}

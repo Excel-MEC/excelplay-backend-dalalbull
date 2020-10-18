@@ -1,5 +1,9 @@
 package database
 
+import (
+	"time"
+)
+
 // User holds the details of a particular user
 type User struct {
 	Name string `json:"name" db:"name"`
@@ -105,4 +109,19 @@ type CurrentPriceInfo struct {
 	CashBal  float32 `json:"cash_bal" db:"cash_bal"`
 	Margin   float32 `json:"margin" db:"margin"`
 	NoTrans  float32 `json:"no_trans" db:"no_trans"`
+}
+
+// History holds data about past transactions of a user
+type History struct {
+	Symbol   string    `json:"symbol" db:"symbol"`
+	BuySS    string    `json:"buy_ss" db:"buy_ss"`
+	Quantity float32   `json:"quantity" db:"quantity"`
+	Price    float32   `json:"price" db:"price"`
+	Time     time.Time `json:"time" db:"time"`
+	Total    float32   `json:"total"`
+}
+
+// HistoryArr holds an array of History instances
+type HistoryArr struct {
+	Histories []History `json:"history"`
 }
