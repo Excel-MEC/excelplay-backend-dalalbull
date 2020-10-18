@@ -83,7 +83,7 @@ func (router *Router) Routes(db *database.DB, config *env.Config) {
 				),
 			),
 		),
-	).Methods("GET")
+	).Methods("POST")
 	router.Handle("/api/sell",
 		middlewares.ErrorsMiddleware(
 			httperrors.Handler(
@@ -113,7 +113,7 @@ func (router *Router) Routes(db *database.DB, config *env.Config) {
 				),
 			),
 		),
-	).Methods("GET")
+	).Methods("POST")
 	router.Handle("/api/stockinfo",
 		middlewares.ErrorsMiddleware(
 			httperrors.Handler(
@@ -133,7 +133,7 @@ func (router *Router) Routes(db *database.DB, config *env.Config) {
 				),
 			),
 		),
-	).Methods("GET")
+	).Methods("POST")
 
 	// LoggerMiddleware does not have to be selectively applied because it applies to all endpoints
 	router.Use(middlewares.LoggerMiddleware)
