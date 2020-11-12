@@ -125,3 +125,11 @@ type History struct {
 type HistoryArr struct {
 	Histories []History `json:"history"`
 }
+
+type TransactionBuy struct {
+	Symbol   string    `json:"symbol" db:"symbol"`
+	Quantity int       `json:"quantity" db:"quantity"`
+	Value    float32   `json:"value" db:"value"`
+	ID       string    `json:"id" db:"user_id"`
+	Time     time.Time `json:"time" db:"time"`
+}
