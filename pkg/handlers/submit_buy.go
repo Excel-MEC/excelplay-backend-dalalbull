@@ -1,9 +1,11 @@
 package handlers
 
 import (
-	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/utils"
 	"encoding/json"
 	"net/http"
+
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/utils"
+	"github.com/dgrijalva/jwt-go"
 
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/strconst"
 
@@ -14,87 +16,109 @@ import (
 
 // GetCompanyDetails gets all the stock details of a single company
 func SubmitBuy(db *database.DB, env *env.Config) httperrors.Handler {
-	type TransactionType string
+	type TransactionType int
 	const (
 		buy TransactionType = iota
-		sell TransactionType
+		sell
 	)
 	type request struct {
-		Quantity int,
-		Company string,
-		Pending float32, // empty if not pending
-		Type TransactionType, // buy or shortsell
+		Quantity int
+		Company  string
+		Pending  float32         // empty if not pending
+		Type     TransactionType // buy or shortsell
 	}
 	type response struct {
 		Msg string
 	}
-	func buyTransaction(w http.ResponseWriter, req request) *httperrors.HTTPError {
+	buyTransaction := func(w http.ResponseWriter, r *http.Request, req request) *httperrors.HTTPError {
 		var companyInfo database.CompanyInfo
-		err = db.GetCompanyStockInfo(req.Company, &companyInfo)
+		err := db.GetCompanyStockInfo(req.Company, &companyInfo)
 		if err != nil {
 			return &httperrors.HTTPError{r, err, "Incorrect company name", http.StatusBadRequest}
+		}
+		jsonRes, err := json.Marshal(companyInfo)
+		if err != nil {
+			return &httperrors.HTTPError{r, err, "Could not serialize json", http.StatusInternalServerError}
 		}
 		currPrice := companyInfo.CurrPrice
 
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
 		userID := props["sub"].(string)
 		var portfolio database.Portfolio
-		err := db.GetPortfolio(&portfolio, userID)
+		err = db.GetPortfolio(&portfolio, userID)
 		if err != nil {
 			return &httperrors.HTTPError{r, err, "Could not retrieve user portfolio", http.StatusBadRequest}
 		}
 		noOfTrans := portfolio.NoTrans
-		margin := portfolio.Margin
+		// margin := portfolio.Margin
 
 		pending := req.Pending
-		if pending != nil {
-			if pending == curr_price {
+		if pending != 0 {
+			if pending == currPrice {
 				return &httperrors.HTTPError{r, nil, "Pending price cannot be equal to current price", http.StatusBadRequest}
 			}
-			jsonRes, err := json.Marshal(companyInfo)
+
+			// TODO : Create a pending txn
+
+			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+			w.WriteHeader(http.StatusOK)
+			w.Write(jsonRes)
+			return nil
+		}
+
+		brokerage := utils.CalculateBrokerage(noOfTrans, req.Quantity, currPrice)
+
+		userCashBal := portfolio.CashBal
+		if userCashBal-(float32(req.Quantity)*currPrice)-brokerage < 0 {
+			return &httperrors.HTTPError{r, nil, "Not enough balance", http.StatusBadRequest}
+		}
+
+		txn := database.TransactionBuy{}
+		err = db.GetTransactionBuy(userID, req.Company, &txn)
+		if err != nil {
+			// Create new txn buy
+			err = db.CreateNewTransactionBuy(userID, req.Company, req.Quantity, currPrice)
 			if err != nil {
-				return &httperrors.HTTPError{r, err, "Could not serialize json", http.StatusInternalServerError}
+				return &httperrors.HTTPError{r, err, "Internal server error", http.StatusInternalServerError}
 			}
 
 			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 			w.WriteHeader(http.StatusOK)
 			w.Write(jsonRes)
 			return nil
-		} 
-
-		brokerage := utils.CalculateBrokerage(noOfTrans, req.Quantity, currPrice)
-
-		userCashBal := portfolio.CashBal
-		if userCashBal - (req.Quantity * currPrice) - brokerage < 0 {
-			return &httperrors.HTTPError{r, nil, "Not enough balance", http.StatusBadRequest}
 		}
-
-		txn := database.TransactionBuy{}
-		err = db.Get(&txn, "select * from transaction_buy where user_id = ? and symbol = ?", userID, req.Symbol)
+		// Update existing txn buy
+		val := (currPrice*float32(req.Quantity) + txn.Value*float32(txn.Quantity)) / float32(req.Quantity+txn.Quantity)
+		err = db.UpdateTransactionBuy(userID, req.Company, req.Quantity+txn.Quantity, val)
 		if err != nil {
-				
+			return &httperrors.HTTPError{r, err, "Internal server error", http.StatusInternalServerError}
 		}
 
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonRes)
+		return nil
 	}
-	func shortSellTransaction(w http.ResponseWriter, req request) *httperrors.HTTPError {
+	shortSellTransaction := func(w http.ResponseWriter, r *http.Request, req request) *httperrors.HTTPError {
 		var companyInfo database.CompanyInfo
-		err = db.GetCompanyStockInfo(req.Company, &companyInfo)
+		err := db.GetCompanyStockInfo(req.Company, &companyInfo)
 		if err != nil {
 			return &httperrors.HTTPError{r, err, "Incorrect company name", http.StatusBadRequest}
 		}
 
 		pending := req.Pending
-		if pending == nil {
+		if pending == 0 {
 			jsonRes, err := json.Marshal(companyInfo)
 			if err != nil {
 				return &httperrors.HTTPError{r, err, "Could not serialize json", http.StatusInternalServerError}
 			}
 
+			// TODO : Create a pending txn
+
 			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 			w.WriteHeader(http.StatusOK)
 			w.Write(jsonRes)
 			return nil
-		}
 		} else {
 
 		}
@@ -109,8 +133,6 @@ func SubmitBuy(db *database.DB, env *env.Config) httperrors.Handler {
 			return &httperrors.HTTPError{r, err, "Quantity cannot be 0", http.StatusBadRequest}
 		}
 
-		
-
 		marketOpen := utils.IsMarketOpen()
 		if !marketOpen {
 			return &httperrors.HTTPError{r, err, "Markets Closed", http.StatusBadRequest}
@@ -118,9 +140,9 @@ func SubmitBuy(db *database.DB, env *env.Config) httperrors.Handler {
 
 		reqtype := req.Type
 		if reqtype == buy {
-			return buyTransaction(w, req)
+			return buyTransaction(w, r, req)
 		}
-		return shortSellTransaction(w, req)
+		return shortSellTransaction(w, r, req)
 
 	}
 }

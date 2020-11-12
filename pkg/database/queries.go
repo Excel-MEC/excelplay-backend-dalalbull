@@ -127,3 +127,21 @@ func (db *DB) GetHistory(uid string, histories *[]History) error {
 	}
 	return nil
 }
+
+func (db *DB) GetTransactionBuy(userID, company string, txn *TransactionBuy) error {
+	err := db.Get(&txn, "select * from transaction_buy where user_id = $1 and symbol = $2", userID, company)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (db *DB) CreateNewTransactionBuy(userID, company string, qty int, value float32) error {
+	_, err := db.Exec("insert into transaction_buy values($1, $2, $3, $4)", userID, company, qty, value)
+	return err
+}
+
+func (db *DB) UpdateTransactionBuy(userID, company string, qty int, value float32) error {
+	_, err := db.Exec("update transaction_buy set quantity = $3, value = $4 where user_id = $1 and symbol = $2", userID, company, qty, value)
+	return err
+}
