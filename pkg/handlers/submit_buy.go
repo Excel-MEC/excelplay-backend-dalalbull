@@ -82,14 +82,28 @@ func SubmitBuy(db *database.DB, env *env.Config) httperrors.Handler {
 				return &httperrors.HTTPError{r, err, "Internal server error", http.StatusInternalServerError}
 			}
 
-			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-			w.WriteHeader(http.StatusOK)
-			w.Write(jsonRes)
-			return nil
+		} else {
+			// Update existing txn buy
+			val := (currPrice*float32(req.Quantity) + txn.Value*float32(txn.Quantity)) / float32(req.Quantity+txn.Quantity)
+			err = db.UpdateTransactionBuy(userID, req.Company, req.Quantity+txn.Quantity, val)
+			if err != nil {
+				return &httperrors.HTTPError{r, err, "Internal server error", http.StatusInternalServerError}
+			}
 		}
-		// Update existing txn buy
-		val := (currPrice*float32(req.Quantity) + txn.Value*float32(txn.Quantity)) / float32(req.Quantity+txn.Quantity)
-		err = db.UpdateTransactionBuy(userID, req.Company, req.Quantity+txn.Quantity, val)
+
+		err = db.UpdatePortfolio(userID, portfolio.CashBal-brokerage, portfolio.NoTrans+1, portfolio.Margin)
+		if err != nil {
+			return &httperrors.HTTPError{r, err, "Internal server error", http.StatusInternalServerError}
+		}
+
+		// Create new history entry
+		history := database.History{
+			Symbol:   req.Company,
+			BuySS:    int(buy),
+			Quantity: float32(req.Quantity),
+			Price:    currPrice,
+		}
+		err = db.CreateNewHistory(userID, history)
 		if err != nil {
 			return &httperrors.HTTPError{r, err, "Internal server error", http.StatusInternalServerError}
 		}
@@ -105,6 +119,20 @@ func SubmitBuy(db *database.DB, env *env.Config) httperrors.Handler {
 		if err != nil {
 			return &httperrors.HTTPError{r, err, "Incorrect company name", http.StatusBadRequest}
 		}
+		jsonRes, err := json.Marshal(companyInfo)
+		if err != nil {
+			return &httperrors.HTTPError{r, err, "Could not serialize json", http.StatusInternalServerError}
+		}
+		currPrice := companyInfo.CurrPrice
+
+		props, _ := r.Context().Value("props").(jwt.MapClaims)
+		userID := props["sub"].(string)
+		var portfolio database.Portfolio
+		err = db.GetPortfolio(&portfolio, userID)
+		if err != nil {
+			return &httperrors.HTTPError{r, err, "Could not retrieve user portfolio", http.StatusBadRequest}
+		}
+		noOfTrans := portfolio.NoTrans
 
 		pending := req.Pending
 		if pending == 0 {
@@ -119,9 +147,54 @@ func SubmitBuy(db *database.DB, env *env.Config) httperrors.Handler {
 			w.WriteHeader(http.StatusOK)
 			w.Write(jsonRes)
 			return nil
-		} else {
-
 		}
+		brokerage := utils.CalculateBrokerage(noOfTrans, req.Quantity, currPrice)
+
+		userCashBal := portfolio.CashBal
+		if userCashBal-(float32(req.Quantity)*currPrice)/2-brokerage < 0 {
+			return &httperrors.HTTPError{r, nil, "Not enough balance", http.StatusBadRequest}
+		}
+
+		txn := database.TransactionShortSell{}
+		err = db.GetTransactionShortSell(userID, req.Company, &txn)
+		if err != nil {
+			// Create new txn shortsell
+			err = db.CreateNewTransactionShortSell(userID, req.Company, req.Quantity, currPrice)
+			if err != nil {
+				return &httperrors.HTTPError{r, err, "Internal server error", http.StatusInternalServerError}
+			}
+
+		} else {
+			// Update existing txn buy
+			val := (currPrice*float32(req.Quantity) + txn.Value*float32(txn.Quantity)) / float32(req.Quantity+txn.Quantity)
+			err = db.UpdateTransactionShortSell(userID, req.Company, req.Quantity+txn.Quantity, val)
+			if err != nil {
+				return &httperrors.HTTPError{r, err, "Internal server error", http.StatusInternalServerError}
+			}
+		}
+
+		margin := float32(req.Quantity) * currPrice / 2
+		err = db.UpdatePortfolio(userID, portfolio.CashBal-brokerage, portfolio.NoTrans+1, portfolio.Margin+margin)
+		if err != nil {
+			return &httperrors.HTTPError{r, err, "Internal server error", http.StatusInternalServerError}
+		}
+
+		// Create new history entry
+		history := database.History{
+			Symbol:   req.Company,
+			BuySS:    int(sell),
+			Quantity: float32(req.Quantity),
+			Price:    currPrice,
+		}
+		err = db.CreateNewHistory(userID, history)
+		if err != nil {
+			return &httperrors.HTTPError{r, err, "Internal server error", http.StatusInternalServerError}
+		}
+
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonRes)
+		return nil
 	}
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		var req request
