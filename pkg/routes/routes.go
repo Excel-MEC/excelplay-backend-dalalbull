@@ -23,7 +23,11 @@ func NewRouter() *Router {
 
 // Routes initializes the routes of the api
 func (router *Router) Routes(db *database.DB, config *env.Config) {
-	router.HandleFunc("/admin/", handlers.HandleAdmin).Methods("GET")
+	router.Handle("/api/ping", middlewares.ErrorsMiddleware(
+		httperrors.Handler(
+			handlers.HeartBeat(),
+		),
+	)).Methods("GET")
 	router.Handle("/api/handshake",
 		middlewares.ErrorsMiddleware(
 			httperrors.Handler(

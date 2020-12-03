@@ -16,7 +16,7 @@ import (
 func Pending(db *database.DB, env *env.Config) httperrors.Handler {
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
-		uid := strconv.Atoi(props["user_id"].(string))
+		uid, _ := strconv.Atoi(props["user_id"].(string))
 
 		var pending []database.PendingData
 		err := db.GetPendingStocks(uid, &pending)

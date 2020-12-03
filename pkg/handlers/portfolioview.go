@@ -16,7 +16,7 @@ import (
 func PortfolioView(db *database.DB, env *env.Config) httperrors.Handler {
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
-		userID := strconv.Atoi(props["user_id"].(string))
+		userID, _ := strconv.Atoi(props["user_id"].(string))
 		// TODO: Remove completely if totalUserCount is not being used in the frontend
 		// var totalUserCount int
 		// err := db.GetTotalUsers(&totalUserCount)

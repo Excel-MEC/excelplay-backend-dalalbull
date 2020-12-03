@@ -15,7 +15,7 @@ func InitUser(db *database.DB, env *env.Config) httperrors.Handler {
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		// Obtain values from JWT
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
-		userID := strconv.Atoi(props["user_id"].(string))
+		userID, _ := strconv.Atoi(props["user_id"].(string))
 		name := props["name"].(string)
 
 		var currUser database.User

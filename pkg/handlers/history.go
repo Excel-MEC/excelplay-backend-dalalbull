@@ -16,7 +16,7 @@ import (
 func History(db *database.DB, env *env.Config) httperrors.Handler {
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
-		userID := strconv.Atoi(props["user_id"].(string))
+		userID, _ := strconv.Atoi(props["user_id"].(string))
 
 		var histories []database.History
 
