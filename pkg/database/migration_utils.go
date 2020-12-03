@@ -69,7 +69,9 @@ func applyMigrations(db *sql.DB, m []migration) error {
 			return err
 		}
 	}
-	db.Exec("UPDATE meta_migration_data SET id = $1", lastMigration)
+	if lastMigration != 0 {
+		db.Exec("UPDATE meta_migration_data SET id = $1", lastMigration)
+	}
 	return nil
 }
 
