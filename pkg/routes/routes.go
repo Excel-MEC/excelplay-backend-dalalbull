@@ -1,12 +1,14 @@
 package routes
 
 import (
+	_ "github.com/Excel-MEC/excelplay-backend-dalalbull/cmd/excelplay-backend-dalalbull/docs"
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/database"
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/env"
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/handlers"
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/httperrors"
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/middlewares"
 	"github.com/gorilla/mux"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 // Router wraps mux.Router to add route init method
@@ -23,6 +25,7 @@ func NewRouter() *Router {
 
 // Routes initializes the routes of the api
 func (router *Router) Routes(db *database.DB, config *env.Config) {
+	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 	router.Handle("/api/ping", middlewares.ErrorsMiddleware(
 		httperrors.Handler(
 			handlers.HeartBeat(),

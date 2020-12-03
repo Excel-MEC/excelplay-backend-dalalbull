@@ -19,6 +19,15 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// @title Excel Play Dalalbull API
+// @version 1.0
+// @description This is the swagger doc for the API for Excel Play Dalalbull.
+// @license.name Apache 2.0
+// @BasePath /dalalbull
+// @securityDefinitions.apikey ApiKeyAuth
+// @in Authorization
+// @name JWT Authorization
+
 func main() {
 	// if any error occurs during startup, log the error and exit with status 1
 	if err := startup(); err != nil {
