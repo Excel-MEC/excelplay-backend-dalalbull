@@ -1,12 +1,10 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 CREATE TABLE IF NOT EXISTS duser (
-id uuid primary key default uuid_generate_v1(),
+id int primary key,
 name varchar(100) not null
 );
 
 CREATE TABLE IF NOT EXISTS portfolio (
-    user_id uuid primary key,
+    user_id int primary key,
     cash_bal numeric(19,2) default 100000,
     net_worth numeric(19,2) default 100000,
     rank int,
@@ -15,7 +13,7 @@ CREATE TABLE IF NOT EXISTS portfolio (
 );
 
 CREATE TABLE IF NOT EXISTS transaction_buy (
-    user_id uuid not null,
+    user_id int not null,
     symbol varchar(10) not null,
     quantity numeric(19,2) default 0,
     value numeric(19,2) not null,
@@ -23,7 +21,7 @@ CREATE TABLE IF NOT EXISTS transaction_buy (
 );
 
 CREATE TABLE IF NOT EXISTS transaction_short_sell (
-    user_id uuid not null,
+    user_id int not null,
     symbol varchar(10) not null,
     quantity numeric(19,2) default 0,
     value numeric(19,2) not null,
@@ -50,7 +48,7 @@ CREATE TABLE IF NOT EXISTS stock_data_history (
 );
 
 CREATE TABLE IF NOT EXISTS history (
-    uid uuid not null,
+    uid int not null,
     time timestamp default CURRENT_TIMESTAMP,
     symbol varchar(10) not null,
     buy_ss varchar(30) not null,
@@ -59,7 +57,7 @@ CREATE TABLE IF NOT EXISTS history (
 );
 
 CREATE TABLE IF NOT EXISTS pending (
-    uid uuid not null,
+    uid int not null,
     symbol varchar(10) not null,
     buy_ss varchar(30) not null,
     quantity numeric(19,2) default 0,

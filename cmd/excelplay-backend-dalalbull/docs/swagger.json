@@ -1,0 +1,41 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is the swagger doc for the API for Excel Play Dalalbull.",
+        "title": "Excel Play Dalalbull API",
+        "contact": {},
+        "license": {
+            "name": "Apache 2.0"
+        },
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/ping": {
+            "get": {
+                "description": "Sends \"Test\" back. Use this to check if the server is up.",
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Dalalbull"
+                ],
+                "summary": "Server health check.",
+                "responses": {
+                    "200": {
+                        "description": "Server is up",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "JWT Authorization",
+            "in": "Authorization"
+        }
+    }
+}
