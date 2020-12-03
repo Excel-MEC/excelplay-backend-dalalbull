@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/database"
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/env"
@@ -15,7 +16,7 @@ import (
 func Pending(db *database.DB, env *env.Config) httperrors.Handler {
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
-		uid := props["sub"].(string)
+		uid := strconv.Atoi(props["user_id"].(string))
 
 		var pending []database.PendingData
 		err := db.GetPendingStocks(uid, &pending)

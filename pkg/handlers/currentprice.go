@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/database"
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/env"
@@ -18,7 +19,7 @@ func CurrentPrice(db *database.DB, env *env.Config) httperrors.Handler {
 	}
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
-		userID := props["sub"].(string)
+		userID := strconv.Atoi(props["user_id"].(string))
 
 		var c company
 		var currPrice float32
