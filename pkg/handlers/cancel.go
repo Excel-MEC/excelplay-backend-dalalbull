@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/utils"
 
@@ -29,7 +30,7 @@ func Cancel(db *database.DB, env *env.Config) httperrors.Handler {
 			msg = "Markets are closed"
 		} else {
 			props, _ := r.Context().Value("props").(jwt.MapClaims)
-			uid := props["sub"].(string)
+			uid, _ := strconv.Atoi(props["user_id"].(string))
 			var p pendingStockToDelete
 			err := json.NewDecoder(r.Body).Decode(&p)
 			if err != nil {

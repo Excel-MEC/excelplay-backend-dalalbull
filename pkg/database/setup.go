@@ -16,16 +16,17 @@ type DB struct {
 
 // NewDB setups and returns a new database connection instance
 func NewDB(config *env.DBConfig) (*DB, error) {
-	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
 		config.Host,
 		config.Dbport,
 		config.User,
 		config.Password,
 		config.Dbname,
+		config.SSLMode,
 	)
 
 	// Run Migrations
-	err := Migrate("/excelplay-backend-dalalbull/pkg/database/migrations", &DBParams{config.Host, strconv.Itoa(config.Dbport), config.User, config.Password, config.Dbname}, "postgres")
+	err := Migrate("/excelplay-backend-dalalbull/pkg/database/migrations", &DBParams{config.Host, strconv.Itoa(config.Dbport), config.User, config.Password, config.Dbname, config.SSLMode}, "postgres")
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to run migrations")
 	}
@@ -41,10 +42,5 @@ func NewDB(config *env.DBConfig) (*DB, error) {
 		return nil, errors.Wrap(err, "Could not ping the db to establish conection")
 	}
 
-	// execute a query on the server
-	_, err = db.Exec(schema)
-	if err != nil {
-		return nil, errors.Wrap(err, "Could not create schema")
-	}
 	return &DB{db}, nil
 }

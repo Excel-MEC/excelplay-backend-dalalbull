@@ -5,12 +5,12 @@ import (
 )
 
 // CreateNewUser creates a new user, who starts at level 1.
-func (db *DB) CreateNewUser(uuid string, name string) (sql.Result, error) {
+func (db *DB) CreateNewUser(uuid int, name string) (sql.Result, error) {
 	return db.Exec("insert into duser values($1,$2)", uuid, name)
 }
 
 // GetUser gets the details of a user
-func (db *DB) GetUser(currUser *User, uuid string) error {
+func (db *DB) GetUser(currUser *User, uuid int) error {
 	return db.Get(currUser, "select name from duser where id = $1", uuid)
 }
 
@@ -20,7 +20,7 @@ func (db *DB) GetTotalUsers(n *int) error {
 }
 
 // GetPortfolio returns the portfolio of a user
-func (db *DB) GetPortfolio(portfolio *Portfolio, uuid string) error {
+func (db *DB) GetPortfolio(portfolio *Portfolio, uuid int) error {
 	return db.Get(portfolio, "select cash_bal, net_worth, rank, no_trans, margin from portfolio where user_id = $1", uuid)
 }
 
@@ -30,7 +30,7 @@ func (db *DB) GetTickerData(tickerData *[]TickerData) error {
 }
 
 // CreatePortfolio creates a portfolio for a new user
-func (db *DB) CreatePortfolio(uuid string) (sql.Result, error) {
+func (db *DB) CreatePortfolio(uuid int) (sql.Result, error) {
 	var totalUsers int
 	db.Get(totalUsers, "select count(*) from portfolio")
 	return db.Exec("insert into portfolio (user_id, rank) values($1, $2)", uuid, totalUsers+1)
@@ -57,7 +57,7 @@ func (db *DB) GetTopVal(mostActiveVal *[]StockValue) error {
 }
 
 // GetStockHoldingsBuy gets the details about stocks bought by a certain user
-func (db *DB) GetStockHoldingsBuy(userID string, stock *[]Stock) error {
+func (db *DB) GetStockHoldingsBuy(userID int, stock *[]Stock) error {
 	err := db.Select(stock, "select tr.symbol, tr.quantity, tr.value, s.current_price from transaction_buy as tr, stocks_data as s where tr.user_id = $1 and tr.symbol=s.symbol", userID)
 	if err != nil {
 		return err
@@ -69,7 +69,7 @@ func (db *DB) GetStockHoldingsBuy(userID string, stock *[]Stock) error {
 }
 
 // GetStockHoldingsShortSell gets the details about stocks shorted by a certain user
-func (db *DB) GetStockHoldingsShortSell(userID string, stock *[]Stock) error {
+func (db *DB) GetStockHoldingsShortSell(userID int, stock *[]Stock) error {
 	err := db.Select(stock, "select tr.symbol, tr.quantity, tr.value, s.current_price from transaction_short_sell as tr, stocks_data as s where tr.user_id = $1 and tr.symbol=s.symbol", userID)
 	if err != nil {
 		return err
@@ -92,12 +92,12 @@ func (db *DB) GetCompanyStockInfo(companySymbol string, companyInfo *CompanyInfo
 }
 
 // GetPendingStocks returns info about pending stocks
-func (db *DB) GetPendingStocks(uid string, pending *[]PendingData) error {
+func (db *DB) GetPendingStocks(uid int, pending *[]PendingData) error {
 	return db.Select(pending, "select p.quantity, p.symbol, p.buy_ss, p.value, p.id, s.current_price from pending as p left join stocks_data as s on p.symbol = s.symbol where p.uid = $1", uid)
 }
 
 // DeletePending removes the specified entry from the pending table
-func (db *DB) DeletePending(uid string, symbol string) (sql.Result, error) {
+func (db *DB) DeletePending(uid int, symbol string) (sql.Result, error) {
 	return db.Exec("delete from pending where uid = $1 and symbol = $2", uid, symbol)
 }
 
@@ -112,12 +112,12 @@ func (db *DB) GetCurrentPrice(company string, currPrice *float32) error {
 }
 
 // GetUserInfoForCurrentPrice gets some additional user info to be sent whenever a company's current price is requested
-func (db *DB) GetUserInfoForCurrentPrice(uid string, curr *CurrentPriceInfo) error {
+func (db *DB) GetUserInfoForCurrentPrice(uid int, curr *CurrentPriceInfo) error {
 	return db.Get(curr, "select cash_bal, margin, no_trans from portfolio where user_id = $1", uid)
 }
 
 // GetHistory gets the history of transactions of a user
-func (db *DB) GetHistory(uid string, histories *[]History) error {
+func (db *DB) GetHistory(uid int, histories *[]History) error {
 	err := db.Select(histories, "select * from history where uid =  $1", uid)
 	if err != nil {
 		return err

@@ -10,7 +10,7 @@ import (
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/strconst"
 )
 
-// StockSymbol returns the symbols of all the companies
+// StockSymbols returns the symbols of all the companies
 func StockSymbols(db *database.DB, env *env.Config) httperrors.Handler {
 	type Companies struct {
 		Companies []string `json:"companies"`

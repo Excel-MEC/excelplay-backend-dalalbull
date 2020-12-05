@@ -1,0 +1,27 @@
+info:
+  contact: {}
+  description: This is the swagger doc for the API for Excel Play Dalalbull.
+  license:
+    name: Apache 2.0
+  title: Excel Play Dalalbull API
+  version: "1.0"
+paths:
+  /api/ping:
+    get:
+      description: Sends "Test" back. Use this to check if the server is up.
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Server is up
+          schema:
+            type: string
+      summary: Server health check.
+      tags:
+      - Dalalbull
+securityDefinitions:
+  ApiKeyAuth:
+    in: Authorization
+    name: JWT Authorization
+    type: apiKey
+swagger: "2.0"

@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/database"
+	"github.com/rs/cors"
 
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/env"
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/routes"
@@ -17,6 +18,15 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
+
+// @title Excel Play Dalalbull API
+// @version 1.0
+// @description This is the swagger doc for the API for Excel Play Dalalbull.
+// @license.name Apache 2.0
+// @BasePath /dalalbull
+// @securityDefinitions.apikey ApiKeyAuth
+// @in Authorization
+// @name JWT Authorization
 
 func main() {
 	// if any error occurs during startup, log the error and exit with status 1
@@ -39,7 +49,10 @@ func startup() error {
 	logrus.SetOutput(os.Stdout)
 
 	// Read config
-	config := env.LoadConfig()
+	config, err := env.LoadConfig()
+	if err != nil {
+		return errors.Wrap(err, "Could not read env file")
+	}
 
 	//setup the database
 	db, err := database.NewDB(config.DB)
@@ -53,7 +66,7 @@ func startup() error {
 	router.Routes(db, config)
 
 	server := &http.Server{
-		Handler:      router,
+		Handler:      cors.AllowAll().Handler(router),
 		Addr:         config.Port,
 		WriteTimeout: 20 * time.Second,
 		ReadTimeout:  20 * time.Second,
