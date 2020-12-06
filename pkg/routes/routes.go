@@ -151,7 +151,36 @@ func (router *Router) Routes(db *database.DB, config *env.Config) {
 			),
 		),
 	).Methods("GET")
-
+	router.Handle("/api/submit_buy",
+		middlewares.ErrorsMiddleware(
+			httperrors.Handler(
+				middlewares.AuthMiddleware(
+					handlers.SubmitBuy(db, config),
+					config,
+				),
+			),
+		),
+	).Methods("POST")
+	router.Handle("/api/is_share_market_open",
+		middlewares.ErrorsMiddleware(
+			httperrors.Handler(
+				middlewares.AuthMiddleware(
+					handlers.IsShareMarketOpen(db, config),
+					config,
+				),
+			),
+		),
+	).Methods("GET")
+	router.Handle("/api/graph",
+		middlewares.ErrorsMiddleware(
+			httperrors.Handler(
+				middlewares.AuthMiddleware(
+					handlers.Graph(db, config),
+					config,
+				),
+			),
+		),
+	).Methods("POST")
 	// LoggerMiddleware does not have to be selectively applied because it applies to all endpoints
 	router.Use(middlewares.LoggerMiddleware)
 }

@@ -128,7 +128,17 @@ func (db *DB) GetHistory(uid int, histories *[]History) error {
 	return nil
 }
 
-func (db *DB) GetTransactionBuy(userID, company string, txn *TransactionBuy) error {
+// GetStockDataHistory gets the stock history of a specific company
+func (db *DB) GetStockDataHistory(symbol string, stockHistoryData *[]StockHistory) error {
+	err := db.Select(stockHistoryData, "select current_price, time from stock_data_history where symbol = $1 order by time desc limit 20", symbol)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// GetTransactionBuy gets the transactions where type is buy
+func (db *DB) GetTransactionBuy(userID int, company string, txn *TransactionBuy) error {
 	err := db.Get(&txn, "select * from transaction_buy where user_id = $1 and symbol = $2", userID, company)
 	if err != nil {
 		return err
@@ -136,17 +146,20 @@ func (db *DB) GetTransactionBuy(userID, company string, txn *TransactionBuy) err
 	return nil
 }
 
-func (db *DB) CreateNewTransactionBuy(userID, company string, qty int, value float32) error {
+// CreateNewTransactionBuy creates a new transaction for buying
+func (db *DB) CreateNewTransactionBuy(userID int, company string, qty int, value float32) error {
 	_, err := db.Exec("insert into transaction_buy values($1, $2, $3, $4)", userID, company, qty, value)
 	return err
 }
 
-func (db *DB) UpdateTransactionBuy(userID, company string, qty int, value float32) error {
+// UpdateTransactionBuy updates a transaction for buying
+func (db *DB) UpdateTransactionBuy(userID int, company string, qty int, value float32) error {
 	_, err := db.Exec("update transaction_buy set quantity = $3, value = $4 where user_id = $1 and symbol = $2", userID, company, qty, value)
 	return err
 }
 
-func (db *DB) GetTransactionShortSell(userID, company string, txn *TransactionShortSell) error {
+// GetTransactionShortSell gets the transactions where type is short sell
+func (db *DB) GetTransactionShortSell(userID int, company string, txn *TransactionShortSell) error {
 	err := db.Get(&txn, "select * from transaction_buy where user_id = $1 and symbol = $2", userID, company)
 	if err != nil {
 		return err
@@ -154,22 +167,26 @@ func (db *DB) GetTransactionShortSell(userID, company string, txn *TransactionSh
 	return nil
 }
 
-func (db *DB) CreateNewTransactionShortSell(userID, company string, qty int, value float32) error {
+// CreateNewTransactionShortSell creates a new transaction for short selling
+func (db *DB) CreateNewTransactionShortSell(userID int, company string, qty int, value float32) error {
 	_, err := db.Exec("insert into transaction_buy values($1, $2, $3, $4)", userID, company, qty, value)
 	return err
 }
 
-func (db *DB) UpdateTransactionShortSell(userID, company string, qty int, value float32) error {
+// UpdateTransactionShortSell updates a short sell transaction
+func (db *DB) UpdateTransactionShortSell(userID int, company string, qty int, value float32) error {
 	_, err := db.Exec("update transaction_buy set quantity = $3, value = $4 where user_id = $1 and symbol = $2", userID, company, qty, value)
 	return err
 }
 
-func (db *DB) UpdatePortfolio(uuid string, cashBal, noOfTxns, margin float32) error {
+// UpdatePortfolio updates portfolio
+func (db *DB) UpdatePortfolio(uuid int, cashBal, noOfTxns, margin float32) error {
 	_, err := db.Exec("update portfolio set cash_bal = $2,  no_trans = $3, margin = $4 where user_id = $1", uuid, cashBal, noOfTxns, margin)
 	return err
 }
 
-func (db *DB) CreateNewHistory(userID string, h History) error {
+// CreateNewHistory creates a new history instance
+func (db *DB) CreateNewHistory(userID int, h History) error {
 	_, err := db.Exec("insert into history values($1, $2, $3, $4)", userID, h.Symbol, h.BuySS, h.Quantity, h.Price)
 	return err
 }
