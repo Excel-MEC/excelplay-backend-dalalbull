@@ -51,9 +51,10 @@ CREATE TABLE IF NOT EXISTS history (
     uid int not null,
     time timestamp default CURRENT_TIMESTAMP,
     symbol varchar(10) not null,
-    buy_ss varchar(30) not null,
+    buy_ss int not null,
     quantity numeric(19,2) default 0,
     price numeric(19,2) not null
+    time timestamp default CURRENT_TIMESTAMP,
 );
 
 CREATE TABLE IF NOT EXISTS pending (

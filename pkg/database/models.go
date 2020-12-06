@@ -114,7 +114,7 @@ type CurrentPriceInfo struct {
 // History holds data about past transactions of a user
 type History struct {
 	Symbol   string    `json:"symbol" db:"symbol"`
-	BuySS    string    `json:"buy_ss" db:"buy_ss"`
+	BuySS    int       `json:"buy_ss" db:"buy_ss"`
 	Quantity float32   `json:"quantity" db:"quantity"`
 	Price    float32   `json:"price" db:"price"`
 	Time     time.Time `json:"time" db:"time"`
@@ -124,4 +124,20 @@ type History struct {
 // HistoryArr holds an array of History instances
 type HistoryArr struct {
 	Histories []History `json:"history"`
+}
+
+type TransactionBuy struct {
+	Symbol   string    `json:"symbol" db:"symbol"`
+	Quantity int       `json:"quantity" db:"quantity"`
+	Value    float32   `json:"value" db:"value"`
+	ID       string    `json:"id" db:"user_id"`
+	Time     time.Time `json:"time" db:"time"`
+}
+
+type TransactionShortSell struct {
+	Symbol   string    `json:"symbol" db:"symbol"`
+	Quantity int       `json:"quantity" db:"quantity"`
+	Value    float32   `json:"value" db:"value"`
+	ID       string    `json:"id" db:"user_id"`
+	Time     time.Time `json:"time" db:"time"`
 }
