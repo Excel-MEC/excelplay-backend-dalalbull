@@ -128,6 +128,15 @@ func (db *DB) GetHistory(uid int, histories *[]History) error {
 	return nil
 }
 
+// GetStockDataHistory gets the stock history of a specific company
+func (db *DB) GetStockDataHistory(symbol string, stockHistoryData *[]StockHistory) error {
+	err := db.Select(stockHistoryData, "select current_price, time from stock_data_history where symbol = $1 order by time desc limit 20", symbol)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // GetTransactionBuy gets the transactions where type is buy
 func (db *DB) GetTransactionBuy(userID int, company string, txn *TransactionBuy) error {
 	err := db.Get(&txn, "select * from transaction_buy where user_id = $1 and symbol = $2", userID, company)

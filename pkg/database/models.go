@@ -126,6 +126,12 @@ type HistoryArr struct {
 	Histories []History `json:"history"`
 }
 
+// StockHistory holds information about the history of a specific company's stock
+type StockHistory struct {
+	CurrentPrice float32   `db:"current_price"`
+	Time         time.Time `db:"time"`
+}
+
 // TransactionBuy holds information about a buy transaction
 type TransactionBuy struct {
 	Symbol   string    `json:"symbol" db:"symbol"`
