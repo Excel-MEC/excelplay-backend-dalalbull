@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/utils"
 	"github.com/dgrijalva/jwt-go"
@@ -43,7 +44,7 @@ func SubmitBuy(db *database.DB, env *env.Config) httperrors.Handler {
 		currPrice := companyInfo.CurrPrice
 
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
-		userID := props["sub"].(string)
+		userID, _ := strconv.Atoi(props["user_id"].(string))
 		var portfolio database.Portfolio
 		err = db.GetPortfolio(&portfolio, userID)
 		if err != nil {
@@ -126,7 +127,7 @@ func SubmitBuy(db *database.DB, env *env.Config) httperrors.Handler {
 		currPrice := companyInfo.CurrPrice
 
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
-		userID := props["sub"].(string)
+		userID, _ := strconv.Atoi(props["user_id"].(string))
 		var portfolio database.Portfolio
 		err = db.GetPortfolio(&portfolio, userID)
 		if err != nil {
