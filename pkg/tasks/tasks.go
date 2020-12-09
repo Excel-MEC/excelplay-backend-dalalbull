@@ -17,7 +17,6 @@ func InitTasks() {
 	c.AddFunc("*/10 * * * * *", broadcastGraphData)
 	c.AddFunc("*/10 * * * * *", broadcastTickerData)
 	c.AddFunc("*/10 * * * * *", broadcastPortfolioData)
-	c.AddFunc("*/30 * * * * *", leaderboardUpdate)
 
 	c.Start()
 }

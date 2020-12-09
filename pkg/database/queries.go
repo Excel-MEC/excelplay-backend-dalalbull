@@ -80,10 +80,9 @@ func (db *DB) GetStockHoldingsShortSell(userID int, stock *[]Stock) error {
 	return nil
 }
 
-// GetLeaderboard gets the users list in the descending order of level,
-// and for users on the same level, in the ascending order of last submission time.
-func (db *DB) GetLeaderboard(users *[]User) error {
-	return db.Select(users, "select name, curr_level from duser order by curr_level desc, last_anstime")
+// GetLeaderboard gets the top 100 users in the descending order of net worth
+func (db *DB) GetLeaderboard(p *[]Portfolio) error {
+	return db.Select(p, "select net_worth, cash_bal, no_trans, margin, rank from portfolio order by net_worth desc limit 100")
 }
 
 // GetCompanyStockInfo returns all the details about the stock of a certain company

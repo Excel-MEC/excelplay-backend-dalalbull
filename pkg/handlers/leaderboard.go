@@ -14,13 +14,13 @@ import (
 // and for users on the same level, in the ascending order of last submission time.
 func GetLeaderboard(db *database.DB, config *env.Config) httperrors.Handler {
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
-		var users []database.User
-		err := db.GetLeaderboard(&users)
+		var leaders []database.Portfolio
+		err := db.GetLeaderboard(&leaders)
 		if err != nil {
 			return &httperrors.HTTPError{r, err, "Unable to fetch leaderboard", http.StatusInternalServerError}
 		}
 
-		jsonRes, err := json.Marshal(users)
+		jsonRes, err := json.Marshal(leaders)
 		if err != nil {
 			return &httperrors.HTTPError{r, err, strconst.JSONEncodingFail, http.StatusInternalServerError}
 		}
