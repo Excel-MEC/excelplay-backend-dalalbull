@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/database"
+	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/tasks"
 	"github.com/rs/cors"
 
 	"github.com/Excel-MEC/excelplay-backend-dalalbull/pkg/env"
@@ -72,12 +73,17 @@ func startup() error {
 		ReadTimeout:  20 * time.Second,
 	}
 
+	// start repeated tasks
+	logrus.Info("Starting repeated tasks...")
+	tasks.InitTasks()
+
 	//start server
 	logrus.Info("Server starting on port " + config.Port)
 	err = server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
 		return errors.Wrap(err, "Could not start server on port "+config.Port)
 	}
+
 	return nil
 }
 
